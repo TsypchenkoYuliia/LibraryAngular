@@ -1,0 +1,43 @@
+<!doctype html>
+<html ng-app="libraryApp">
+<head>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div ng-controller="bookController">
+        <new-book></new-book>
+    <div class="page-header">
+        <h1> Список книг </h1>
+    </div>
+    <div class="panel">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Hаименование</th>
+                    <th>Автор</th>
+                    <th>Издательство</th>
+                    <th>Год издания</th>
+                    <th>Резерв</th>
+                    <th>Редактировать</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="item in books.items">
+                    <td>{{item.title}}</td>
+                    <td>{{item.author}}</td>
+                    <td>{{item.publishingHouse}}</td>
+                    <!-- <td><input type="checkbox" ng-model="item.done" /></td> -->
+                    <td>{{item.year}}</td>
+                    <td><input type='button' ng-If='!item.reserve' value="Зарезервировать"></td>
+                    <td><input type='button' ng-If="item.added == 'Оля'" value="Редактировать"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+<script src="./controllers/bookController.js"></script>
+<script src="./config.js"></script>
+</body>
+</html>
