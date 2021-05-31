@@ -1,43 +1,199 @@
 <!doctype html>
 <html ng-app="libraryApp">
+
 <head>
-<meta charset="utf-8">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+
 </head>
+
 <body>
-    <div ng-controller="bookController">
-        <new-book></new-book>
-    <div class="page-header">
-        <h1> Список книг </h1>
+    <div ng-controller="bookController" style="padding:50px">
+        <h3>Hello, {{currentUser}}</h3>
+        <div class="page-header">
+            <h1> Добавление книги</h1>
+            <div class="form-inline" ng-form='form'>
+                <div class="form-group">
+                    <div class="col-md-8">
+                        <input class="form-control" ng-model="newbook.title" placeholder="Hаименование" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" ng-model="newbook.author"
+                            placeholder="Автор" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" ng-model="newbook.publishingHouse"
+                            placeholder="Издательство" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" ng-model="newbook.year"
+                            placeholder="Год издательства" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        <button type='submit' class="btn btn-default"
+                            ng-click="addItem(newbook, form)">Добавить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="page-header">
+            <h1> Список книг </h1>
+        </div>
+        <div class="panel">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Hаименование</th>
+                        <th>Автор</th>
+                        <th>Издательство</th>
+                        <th>Год издания</th>
+                        <th>Резерв</th>
+                        <th>Редактировать</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="item in books">
+                        <td>{{item.title}}</td>
+                        <td>{{item.author}}</td>
+                        <td>{{item.publishingHouse}}</td>
+                        <!-- <td><input type="checkbox" ng-model="item.done" /></td> -->
+                        <td>{{item.year}}</td>
+                        <td>
+                            <input type='button' ng-If='!item.reserve' value="Зарезервировать" ng-click="reserve(item)">
+                            <input type='button' ng-If='item.reserve' value="Вернуть" ng-click="return(item)">
+                        </td>
+                        <td>
+                            <input type='button' ng-If="item.added === currentUser" value="Редактировать" ng-click="edit(item)">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="page-header">
+            <h1> Обновление книги</h1>
+            <div class="form-inline" ng-form='form'>
+                <div class="form-group">
+                    <div class="col-md-8">
+                        <input class="form-control" ng-model="updateBook.title" placeholder="Hаименование" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" ng-model="updateBook.author"
+                            placeholder="Автор" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" ng-model="updateBook.publishingHouse"
+                            placeholder="Издательство" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" ng-model="updateBook.year"
+                            placeholder="Год издательства" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-8">
+                        <button type='submit' class="btn btn-default"
+                            ng-click="updateCurrentBook(updateBook)">Обновить</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-    <div class="panel">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Hаименование</th>
-                    <th>Автор</th>
-                    <th>Издательство</th>
-                    <th>Год издания</th>
-                    <th>Резерв</th>
-                    <th>Редактировать</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr ng-repeat="item in books.items">
-                    <td>{{item.title}}</td>
-                    <td>{{item.author}}</td>
-                    <td>{{item.publishingHouse}}</td>
-                    <!-- <td><input type="checkbox" ng-model="item.done" /></td> -->
-                    <td>{{item.year}}</td>
-                    <td><input type='button' ng-If='!item.reserve' value="Зарезервировать"></td>
-                    <td><input type='button' ng-If="item.added == 'Оля'" value="Редактировать"></td>
-                </tr>
-            </tbody>
-        </table>
+
+    
+
+    <!-- Modal Login-->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="editModalLabel">Login</h4>
+                </div>
+                <div class="modal-body" ng-controller="authController">
+                    <form>
+                            <div class="form-group">
+                                <label class="control-label">Name:</label>
+                                <input type="text" class="form-control" name="name" ng-model="user.name">
+                            </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" ng-click="login(user)">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
-<script src="./controllers/bookController.js"></script>
-<script src="./config.js"></script>
+
+    <!-- Modal Register-->
+    <div class="modal fade" id="registerModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span
+                            class="sr-only">Close</span>
+                    </button>
+                    <h4 class="modal-title" id="editModalLabel">Login</h4>
+                </div>
+                <div class="modal-body" ng-controller="authController">
+                    <form>
+                            <div class="form-group">
+                                <label class="control-label">Name:</label>
+                                <input type="text" class="form-control" name="name" ng-model="user.name">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Address:</label>
+                                <textarea class="form-control" name="address" ng-model="user.address"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Date of
+                                    Birth:</label>
+                                <input type="date" class="form-control" name="date" value="2021-01-01" ng-model="user.date">
+                            </div>
+                            <div class="form-group">
+                                <label class="control-label">Phone:</label>
+                                <input type="tel" class="form-control" name="phone"
+                                ng-model="user.phone"
+                                    pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">
+                            </div>
+                        
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" ng-click="submit(user)">Save</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./book.controller.js"></script>
+    <script src="./auth.controller.js"></script>
+   
+
 </body>
+
 </html>
